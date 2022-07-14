@@ -14,7 +14,7 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carrinho'),
+        title: const Text('Carrinho'),
       ),
       body: Column(
         children: [
@@ -47,7 +47,8 @@ class CartPage extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    child: Text('COMPRAR'),
+                    // ignore: sort_child_properties_last
+                    child: const Text('COMPRAR'),
                     style: TextButton.styleFrom(
                       textStyle: TextStyle(
                         color: Theme.of(context).primaryColor,

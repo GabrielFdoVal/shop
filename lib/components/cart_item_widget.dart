@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/cart.dart';
@@ -18,7 +20,7 @@ class CartItemWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         color: Theme.of(context).errorColor,
-        child: Icon(
+        child: const Icon(
           Icons.delete,
           color: Colors.white,
           size: 40,
@@ -34,20 +36,20 @@ class CartItemWidget extends StatelessWidget {
         return showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: Text("Tem certeza?"),
-            content: Text("Quer remover o item do carrinho?"),
+            title: const Text("Tem certeza?"),
+            content: const Text("Quer remover o item do carrinho?"),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop(false);
                 },
-                child: Text("Não"),
+                child: const Text("Não"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(ctx).pop(true);
                 },
-                child: Text("Sim"),
+                child: const Text("Sim"),
               ),
             ],
           ),
