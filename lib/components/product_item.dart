@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/excepitons/http_excepiton.dart';
 import 'package:shop/models/product.dart';
 import 'package:shop/models/product_list.dart';
 import 'package:shop/utils/app_routes.dart';
@@ -13,6 +14,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final msg = ScaffoldMessenger.of(context);
     return Column(
       children: [
         ListTile(
@@ -57,13 +59,21 @@ class ProductItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ).then((c) {
+                    ).then((c) async {
                       final bool _confirm = c ?? false;
                       if (_confirm) {
-                        Provider.of<ProductList>(
-                          context,
-                          listen: false,
-                        ).removeProduct(product.id);
+                        try {
+                          await Provider.of<ProductList>(
+                            context,
+                            listen: false,
+                          ).removeProduct(product.id);
+                        } on HttpExcepiton catch (erro) {
+                          msg.showSnackBar(
+                            SnackBar(
+                              content: Text(erro.toString()),
+                            ),
+                          );
+                        }
                       }
                     });
                   },
