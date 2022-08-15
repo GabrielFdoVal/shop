@@ -22,20 +22,25 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite() async {
-    _toggleFavorite();
-
-    final response = await http.patch(
-      Uri.parse('${Constants.product_base_url}/$id.json'),
-      body: jsonEncode({'isFavorite': isFavorite}),
-    );
-
-    if (response.statusCode >= 400) {
+  Future<void> toggleFavorite(String token, String userId) async {
+    try {
       _toggleFavorite();
-      throw HttpExcepiton(
-        msg: "Não foi possível marcar o produto como favorito",
-        statusCode: response.statusCode,
+
+      final response = await http.put(
+        Uri.parse(
+            '${Constants.user_favorites_url}/$userId/$id.json?auth=$token'),
+        body: jsonEncode(isFavorite),
       );
+
+      if (response.statusCode >= 400) {
+        _toggleFavorite();
+        throw HttpExcepiton(
+          msg: "Não foi possível marcar o produto como favorito",
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (_) {
+      _toggleFavorite();
     }
   }
 

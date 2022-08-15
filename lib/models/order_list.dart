@@ -8,8 +8,16 @@ import 'package:shop/models/order.dart';
 import 'package:shop/utils/constants.dart';
 
 class OrderList with ChangeNotifier {
+  final String _token;
+  final String _userId;
   List<Order> _items = [];
   List<Order> get items => [..._items];
+
+  OrderList([
+    this._token = '',
+    this._userId = '',
+    this._items = const [],
+  ]);
 
   int get itemsCount {
     return _items.length;
@@ -18,7 +26,7 @@ class OrderList with ChangeNotifier {
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
     final response = await http.post(
-      Uri.parse('${Constants.order_base_url}.json'),
+      Uri.parse('${Constants.order_base_url}/$_userId.json?auth=$_token'),
       body: jsonEncode(
         {
           'total': cart.totalAmount,
@@ -52,15 +60,16 @@ class OrderList with ChangeNotifier {
   }
 
   Future<void> loudOrders() async {
-    _items.clear();
-    final response =
-        await http.get(Uri.parse('${Constants.order_base_url}.json'));
+    List<Order> items = [];
+
+    final response = await http.get(
+        Uri.parse('${Constants.order_base_url}/$_userId.json?auth=$_token'));
     if (response.body == 'null') {
       return;
     } else {
       Map<String, dynamic> data = jsonDecode(response.body);
       data.forEach((orderId, orderData) {
-        _items.add(
+        items.add(
           Order(
             id: orderId,
             total: orderData['total'],
@@ -78,6 +87,8 @@ class OrderList with ChangeNotifier {
         );
       });
     }
+
+    _items = items.reversed.toList();
     notifyListeners();
   }
 }

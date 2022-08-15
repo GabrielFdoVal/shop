@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/models/auth.dart';
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/order_list.dart';
+import 'package:shop/pages/auth_or_home_page.dart';
+import 'package:shop/pages/auth_pages.dart';
 import 'package:shop/pages/cart_page.dart';
 import 'package:shop/pages/orders_page.dart';
 import 'package:shop/pages/product_detail_page.dart';
@@ -24,13 +27,30 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (_) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, ProductList>(
+          update: (ctx, auth, previous) {
+            return ProductList(
+              auth.token ?? '',
+              auth.uid ?? '',
+              previous?.items ?? [],
+            );
+          },
           create: (_) => ProductList(),
         ),
         ChangeNotifierProvider(
           create: (_) => Cart(),
         ),
-        ChangeNotifierProvider(
+        ChangeNotifierProxyProvider<Auth, OrderList>(
           create: (_) => OrderList(),
+          update: (ctx, auth, previous) {
+            return OrderList(
+              auth.token ?? '',
+              auth.uid ?? '',
+              previous?.items ?? [],
+            );
+          },
         ),
       ],
       child: MaterialApp(
@@ -39,12 +59,17 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           secondaryHeaderColor: Colors.deepOrange,
           fontFamily: "Lato",
+          textTheme: TextTheme(
+            headline6: TextStyle(
+              color: Colors.white,
+            ),
+          ),
         ),
         //home: ProductsOverviewPage(),
         routes: {
+          AppRoutes.auth_or_home: (ctx) => const AuthOrHomePage(),
           AppRoutes.product_detail: (ctx) => const ProductDetailPage(),
           AppRoutes.cart_page: (ctx) => const CartPage(),
-          AppRoutes.home: (ctx) => const ProductsOverviewPage(),
           AppRoutes.orders: (ctx) => const OrdersPage(),
           AppRoutes.products: (ctx) => const ProductsPage(),
           AppRoutes.product_form: (ctx) => const ProductFormPage(),
