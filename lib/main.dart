@@ -11,6 +11,7 @@ import 'package:shop/pages/product_detail_page.dart';
 import 'package:shop/pages/product_form_page.dart';
 import 'package:shop/pages/product_page.dart';
 import 'package:shop/utils/app_routes.dart';
+import 'package:shop/utils/custom_route.dart';
 import 'pages/products_overview_page.dart';
 import 'models/product_list.dart';
 
@@ -63,6 +64,12 @@ class MyApp extends StatelessWidget {
             headline6: TextStyle(
               color: Colors.white,
             ),
+          ),
+          pageTransitionsTheme: PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: CustomPageTransitionBuilder(),
+              TargetPlatform.iOS: CustomPageTransitionBuilder(),
+            },
           ),
         ),
         //home: ProductsOverviewPage(),
